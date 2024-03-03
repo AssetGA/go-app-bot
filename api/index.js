@@ -1,66 +1,87 @@
-const express = require("express");
-const config = require("config");
-const cors = require("cors");
-const chalk = require("chalk");
-const jwt = require("jsonwebtoken");
+// const express = require("express");
+// const config = require("config");
+// const cors = require("cors");
+// const chalk = require("chalk");
+// const jwt = require("jsonwebtoken");
 
 const { sendMessage } = require("../telegraf");
 
-const app = express();
+// const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
+// app.use(cors());
 
-function authenticateToken(req, res, next) {
-  const token = req.headers["authorization"];
+// function authenticateToken(req, res, next) {
+//   const token = req.headers["authorization"];
 
-  if (!token) {
-    return res.sendStatus(401);
-  }
+//   if (!token) {
+//     return res.sendStatus(401);
+//   }
 
-  jwt.verify(token, "your_secret_key", (err, user) => {
-    if (err) {
-      return res.sendStatus(403);
-    }
-    req.user = user;
-    next();
-  });
-}
-
-app.get("/api", async (req, res) => {
-  try {
-    // const { name, phone } = req.query;
-
-    // const getInfo = await sendMessage(
-    //   `My name ${name}, phone ${"https://wa.me/8" + phone}`
-    // );
-
-    return res.send("Hallo");
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-const PORT = config.get("port") ?? 8080;
-
-// if (process.env.NODE_ENV === 'production') {
-//     console.log('Production')
-// } else {
-//     console.log('Development')
+//   jwt.verify(token, "your_secret_key", (err, user) => {
+//     if (err) {
+//       return res.sendStatus(403);
+//     }
+//     req.user = user;
+//     next();
+//   });
 // }
 
-async function start() {
-  try {
-    app.listen(PORT, () => {
-      console.log(chalk.green(`Server has been started on port ${PORT}...`));
-    });
-  } catch (e) {
-    console.log(chalk.red(e.message));
-    process.exit(1);
-  }
-}
+// app.get("/api", async (req, res) => {
+//   try {
+//     // const { name, phone } = req.query;
 
-start();
+//     // const getInfo = await sendMessage(
+//     //   `My name ${name}, phone ${"https://wa.me/8" + phone}`
+//     // );
 
-module.exports = app;
+//     return res.send("Hallo");
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
+
+// const PORT = config.get("port") ?? 8080;
+
+// // if (process.env.NODE_ENV === 'production') {
+// //     console.log('Production')
+// // } else {
+// //     console.log('Development')
+// // }
+
+// async function start() {
+//   try {
+//     app.listen(PORT, () => {
+//       console.log(chalk.green(`Server has been started on port ${PORT}...`));
+//     });
+//   } catch (e) {
+//     console.log(chalk.red(e.message));
+//     process.exit(1);
+//   }
+// }
+
+// start();
+
+// module.exports = app;
+
+module.exports = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  const { name, phone } = req.query;
+
+  console.log("req", req.query);
+
+  const getInfo = await sendMessage(
+    `My name ${name}, phone ${"https://wa.me/8" + phone}`
+  );
+  console.log("getinfo", getInfo);
+  res.send(getInfo);
+};
