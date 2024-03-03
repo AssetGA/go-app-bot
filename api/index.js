@@ -3,7 +3,7 @@ const config = require("config");
 const cors = require("cors");
 const chalk = require("chalk");
 
-const routes = require("../routes");
+const { sendMessage } = require("../telegraf");
 
 const app = express();
 
@@ -11,17 +11,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
-// app.get("/api", async (req, res) => {
-//   res.send("Hello World!");
-// });
+app.get("/api", async (req, res) => {
+  const { name, phone } = req.query;
 
-// app.post("/api", async (req, res) => {
-//   const { name } = req.query;
-//   console.log("1586", name);
-//   res.send(name);
-// });
+  const getInfo = await sendMessage(
+    `My name ${name}, phone ${"https://wa.me/8" + phone}`
+  );
 
-app.use("/api", routes);
+  return res.send(getInfo);
+});
 
 const PORT = config.get("port") ?? 8080;
 
