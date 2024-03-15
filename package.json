@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "energy_thread",
+  "description": "bot",
   "main": "api/index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node api/index.js",
